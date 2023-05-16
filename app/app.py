@@ -1,18 +1,12 @@
-
-
-
 from flask import Flask, request, render_template, redirect, url_for
 from flask_pymongo import PyMongo, DESCENDING
 from bson.objectid import ObjectId
+import os
 
 app = Flask(__name__)
-app.config["MONGO_URI"] ="mongodb+srv://admin:admin@samplecluster.cyfvrvo.mongodb.net/db?retryWrites=true&w=majority"
+app.config["MONGO_URI"] = os.getenv('MONGO_URI', "mongodb+srv://admin:admin@samplecluster.cyfvrvo.mongodb.net/db?retryWrites=true&w=majority")
 
 mongo = PyMongo(app)
-
-print(mongo.db)  # add this line
-users = mongo.db.users.find().sort("_id", DESCENDING)
-
 
 @app.route('/')
 def users():
@@ -47,4 +41,4 @@ def delete_user(user_id):
     return redirect(url_for('users'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=False)
